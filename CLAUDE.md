@@ -96,6 +96,34 @@ async def my_reasoner(
     return result.model_dump()
 ```
 
+## Compatible models — open-source only
+
+Every LLM call goes through OpenRouter. Defaults are Qwen3-VL (Apache 2.0).
+NVIDIA Nemotron models are listed as drop-in alternatives — **not dependencies**.
+Swap by changing the `AI_MODEL` env var (or `SCOUT_MODEL` / `EXPERT_MODEL` for
+the smart-routing tier).
+
+### Verified working (vision + structured output)
+
+| Model | License | OpenRouter prefix | Notes |
+|---|---|---|---|
+| Qwen3-VL-8B-Instruct | Apache 2.0 | `openrouter/qwen/qwen3-vl-8b-instruct` | Default scout — cheapest, 89% on 25-frame benchmark |
+| Qwen3-VL-32B-Instruct | Apache 2.0 | `openrouter/qwen/qwen3-vl-32b-instruct` | Default AI_MODEL — 97% accuracy |
+| Qwen3-VL-235B-A22B-Instruct | Apache 2.0 | `openrouter/qwen/qwen3-vl-235b-a22b-instruct` | Default expert — 100% on benchmark |
+| NVIDIA Nemotron Nano 12B v2 VL | NVIDIA OS | `openrouter/nvidia/nemotron-nano-12b-v2-vl:free` | NVIDIA's open-source vision model. Free tier. Requires OpenRouter privacy toggle for the NVIDIA model family in your account settings |
+| Meta Llama 3.2 Vision 90B | Llama license | `openrouter/meta-llama/llama-3.2-90b-vision-instruct` | Slower than Qwen, tested working |
+
+### Other NVIDIA Physical AI artifacts (compatible substrate, not runtime deps)
+
+These are NVIDIA's open-source Physical AI ecosystem pieces our output is
+**compatible** with — they consume LeRobot-format trajectories, which is exactly
+what roboscribe-af produces. None are pip-installed as part of this build:
+
+- **NVIDIA GR00T / N1** — humanoid foundation model. Trains on LeRobot-format trajectories
+- **NVIDIA Isaac Lab** — robotics simulation framework, consumes LeRobot data
+- **NVIDIA Cosmos Reason1-7B** — open-weights Physical AI reasoning model on HF, self-hostable via vLLM/SGLang
+- **NVIDIA Cosmos Tokenizer** — open-source video tokenizer, candidate v1.5 integration for a `frame_embedding` sibling column
+
 ## Running locally
 
 ```bash
