@@ -59,18 +59,9 @@ That entire record is one row in a Deep Lake branch, joined to the raw episode b
 
 ## See it run
 
-[![Roboscribe-AF cascade running in the AgentField UI — click to play](assets/demo-poster.png)](assets/demo.mp4)
+[![Roboscribe-AF cascade running in the AgentField UI — click to play](assets/demo-poster.png)](https://github.com/Agent-Field/roboscribe-af/raw/refs/heads/main/assets/demo.mp4)
 
-The AgentField control plane UI rendering the multi-agent cascade live. Each node is one agent invocation with its prompt, output, latency, and cost. A 10-episode `annotate_corpus` run produces roughly 240 nodes across the 5 phases of the cascade.
-
-> Click the image above to download/play the screen recording (10 MB H.264, 26 s). GitHub READMEs can't autoplay videos served from repo-relative paths; for inline autoplay, drag `assets/demo.mp4` into a new GitHub issue / comment, grab the resulting `https://github.com/user-attachments/assets/<uuid>` URL, and swap it into the `<video>` tag below.
-
-<!--
-Once you have the user-attachments URL, replace the click-to-play block above
-with this HTML5 video element so the demo autoplays inline:
-
-<video src="https://github.com/user-attachments/assets/<UUID>" autoplay loop muted playsinline width="100%"></video>
--->
+The AgentField control plane UI rendering the multi-agent cascade live. Each node is one agent invocation with its prompt, output, latency, and cost. A 10-episode `annotate_corpus` run produces roughly 240 nodes across the 5 phases of the cascade. Click the poster above to play the 26-second screen recording.
 
 ---
 
