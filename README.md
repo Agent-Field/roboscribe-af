@@ -57,6 +57,23 @@ That entire record is one row in a Deep Lake branch, joined to the raw episode b
 
 ---
 
+## See it run
+
+[![Roboscribe-AF cascade running in the AgentField UI — click to play](assets/demo-poster.png)](assets/demo.mp4)
+
+The AgentField control plane UI rendering the multi-agent cascade live. Each node is one agent invocation with its prompt, output, latency, and cost. A 10-episode `annotate_corpus` run produces roughly 240 nodes across the 5 phases of the cascade.
+
+> Click the image above to download/play the screen recording (10 MB H.264, 26 s). GitHub READMEs can't autoplay videos served from repo-relative paths; for inline autoplay, drag `assets/demo.mp4` into a new GitHub issue / comment, grab the resulting `https://github.com/user-attachments/assets/<uuid>` URL, and swap it into the `<video>` tag below.
+
+<!--
+Once you have the user-attachments URL, replace the click-to-play block above
+with this HTML5 video element so the demo autoplays inline:
+
+<video src="https://github.com/user-attachments/assets/<UUID>" autoplay loop muted playsinline width="100%"></video>
+-->
+
+---
+
 ## What powers it
 
 | Layer | Tool | What it brings to this build |
@@ -84,14 +101,6 @@ That entire record is one row in a Deep Lake branch, joined to the raw episode b
 The **Smart-routed** mode is the production sweet spot. It runs every frame through the cheap 8B scout first, then escalates to the 235B flagship only when confidence signals fire (low confidence reported by the scout, or unexpectedly few objects detected, which is a robust proxy for occlusion). It escalates 16% of frames and closes 10 of the 13 errors the 8B-only mode would have made, at 62% of the cost of running everything through the flagship.
 
 A separate audit-grade benchmark (4 hand-labelled frames × 7 objective questions × 3 models = 84 predictions) gave the same architecture **89% / 89% / 100%** across the three models in 4.1 seconds parallel wall time.
-
----
-
-## See it run
-
-<video src="assets/demo.mp4" autoplay loop muted playsinline width="100%"></video>
-
-The AgentField control plane UI shows the cascade live as roboscribe-af annotates a corpus. Each node is one agent invocation with its prompt, output, latency, and cost. A 10-episode corpus run produces roughly 240 nodes across the 5 phases of the cascade.
 
 ---
 
