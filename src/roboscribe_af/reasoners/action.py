@@ -20,7 +20,7 @@ import os
 
 from agentfield import AgentRouter
 
-from schemas import ActionThreadResult, MotionPhase
+from roboscribe_af.schemas import ActionThreadResult, MotionPhase
 
 log = logging.getLogger("roboscribe-af.reasoners.action")
 

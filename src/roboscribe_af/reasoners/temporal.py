@@ -27,7 +27,7 @@ import os
 from agentfield import AgentRouter
 from pydantic import BaseModel, Field
 
-from schemas import MotionPhase  # reuse phase schema
+from roboscribe_af.schemas import MotionPhase  # reuse phase schema
 
 log = logging.getLogger("roboscribe-af.reasoners.temporal")
 

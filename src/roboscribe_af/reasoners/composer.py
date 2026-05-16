@@ -16,7 +16,7 @@ import os
 
 from agentfield import AgentRouter
 
-from schemas import (
+from roboscribe_af.schemas import (
     ActionThreadResult,
     EpisodeAnnotation,
     EpisodeGrain,

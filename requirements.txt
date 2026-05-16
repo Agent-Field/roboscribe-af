@@ -1,5 +1,0 @@
-agentfield
-deeplake>=4.6
-httpx>=0.27
-Pillow>=10.0
-numpy>=1.24

@@ -41,7 +41,7 @@ async def load_episode_keyframes(
     which `.ai()` auto-detects as inline images via its positional multimodal
     args (no external fetch required).
     """
-    from tasks import get_adapter  # lazy — keeps startup fast
+    from roboscribe_af.tasks import get_adapter  # lazy — keeps startup fast
 
     adapter = get_adapter(task or os.getenv("AF_TASK"))
     frames = adapter.load_keyframes(episode_id, n=n_keyframes)
@@ -64,7 +64,7 @@ async def load_episode_actions(
     task: str | None = None,
 ) -> dict:
     """Deterministic: load the full action + state stream for an episode."""
-    from tasks import get_adapter
+    from roboscribe_af.tasks import get_adapter
 
     adapter = get_adapter(task or os.getenv("AF_TASK"))
     actions = adapter.load_actions(episode_id)

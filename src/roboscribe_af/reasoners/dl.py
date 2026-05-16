@@ -18,7 +18,7 @@ import os
 
 from agentfield import AgentRouter
 
-from dl_store import (
+from roboscribe_af.dl_store import (
     DEFAULT_ANNOTATION_BRANCH,
     DEFAULT_DL_PATH,
     commit_annotation,
@@ -45,7 +45,7 @@ async def ingest_corpus_to_deeplake(
     Idempotent at the row level (re-ingesting will append duplicates — for v1
     we assume a clean dataset; v1.5 will add dedupe by episode_id).
     """
-    from tasks import get_adapter  # lazy
+    from roboscribe_af.tasks import get_adapter  # lazy
 
     adapter = get_adapter(task)
     ds = ensure_dataset(dl_path or DEFAULT_DL_PATH)

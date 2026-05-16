@@ -7,7 +7,7 @@
 
 Foundation models for robotics, NVIDIA GR00T, OpenVLA, Octo, π-Zero, learn from demonstration data: a robot doing something paired with hierarchical language descriptions of what it did. The data side is the bottleneck. Existing annotation pipelines either run a single multimodal LLM call per episode (cheap, hallucinates) or pay human labelers (accurate, doesn't scale to millions of episodes).
 
-Roboscribe replaces both with a **complex, deeply-cascaded multi-agent architecture**. Every episode runs through a 5-phase cognitive cascade that fans out into **200 to 300 specialized agents working concurrently**: per-keyframe object detectors, per-modality reasoners, meta-spawned segment narrators, cross-modal verifiers, embedding workers, and substrate writers, all dispatched in parallel through an async control plane. One complete annotation (episode goal, sub-task segments, per-modality phase tags, cross-modal verification, semantic embedding) finishes in about 16 seconds at roughly $0.002. Output lands as versioned, hybrid-searchable Deep Lake branches ready to feed any LeRobot, OpenVLA, Octo, or GR00T-compatible training pipeline.
+Roboscribe replaces both with a **complex, deeply-cascaded multi-agent architecture**. Every episode runs through a 5-phase cognitive cascade that fans out into **roughly 24 specialized agents per episode, scaling to 200 to 300 working concurrently across a corpus pass**: per-keyframe object detectors, per-modality reasoners, meta-spawned segment narrators, cross-modal verifiers, embedding workers, and substrate writers, all dispatched in parallel through an async control plane. One complete annotation (episode goal, sub-task segments, per-modality phase tags, cross-modal verification, semantic embedding) finishes in about 16 seconds at roughly $0.002. Output lands as versioned, hybrid-searchable Deep Lake branches ready to feed any LeRobot, OpenVLA, Octo, or GR00T-compatible training pipeline.
 
 Dataset-agnostic. PushT and Aloha bimanual adapters ship with the repo; adding any new LeRobot-format robot is about 30 lines.
 
@@ -61,7 +61,7 @@ That entire record is one row in a Deep Lake branch, joined to the raw episode b
 
 | Layer | Tool | What it brings to this build |
 |---|---|---|
-| **Multi-agent runtime** | [AgentField](https://github.com/Agent-Field/agentfield) | Async-parallel agent orchestration at scale. **Each episode dispatches 200 to 300 cooperating agents through the control-plane queue.** Agents run as microservices with `asyncio.gather` at every layer where work is independent: a 5-phase, depth-5 cognitive cascade with per-keyframe vision fan-out, per-segment narrator spawning, dual-modality thread parallelism, all in one ~16-second pipeline. Per-request model overrides, structured Pydantic outputs at every leaf. |
+| **Multi-agent runtime** | [AgentField](https://github.com/Agent-Field/agentfield) | Async-parallel agent orchestration at scale. **Each episode dispatches 200 to 300 cooperating agents across a 10-episode corpus pass through the control-plane queue.** Agents run as microservices with `asyncio.gather` at every layer where work is independent: a 5-phase, depth-5 cognitive cascade with per-keyframe vision fan-out, per-segment narrator spawning, dual-modality thread parallelism, all in one ~16-second pipeline. Per-request model overrides, structured Pydantic outputs at every leaf. |
 | **Multimodal substrate** | [Deep Lake](https://github.com/activeloopai/deeplake) | Image bytes + Float32 tensors + text + embeddings + scalars in one row, joined by `episode_id`. Versioned branches per annotation pass. Hybrid TQL combining vector similarity, text CONTAINS, numeric filters, and structured equality in a single statement. PyTorch streaming dataloader directly into training loops. |
 | **Dataset format** | [HuggingFace LeRobot](https://github.com/huggingface/lerobot) | The de-facto modern robotics dataset format. Same shape NVIDIA GR00T / Isaac Lab / Cosmos, OpenVLA, Octo, and π-Zero all consume. |
 | **Vision + reasoning models** | [OpenRouter](https://openrouter.ai/) → Qwen3-VL family (default) or NVIDIA Nemotron Nano VL (drop-in) | One env-var swap routes the entire stack through NVIDIA Nemotron instead of Qwen3-VL. |
@@ -99,7 +99,7 @@ A deep, 5-phase cognitive cascade. Every episode goes through:
 4. **Verify**: a cross-modal verifier reconciles the two modality stories. When they disagree, the discrepancy becomes a signal and the episode is automatically flagged for human review.
 5. **Synthesize**: the episode goal is composed, the scene description is embedded (1024-dim), and the structured annotation row is committed to a versioned Deep Lake branch joined to the raw episode by `episode_id`.
 
-Across these five phases the system dispatches **200 to 300 cooperating agents per episode**, all driven through AgentField's async control plane. The architectural choice that earns the accuracy: two structurally separate modality experts that cannot conspire to hallucinate the same wrong story. A single multimodal call sees vision and action as one prompt and glosses over disagreements. Roboscribe analyzes them in parallel, then asks a third agent whether they cohere.
+Across these five phases the system dispatches **200 to 300 cooperating agents across a 10-episode corpus pass per episode**, all driven through AgentField's async control plane. The architectural choice that earns the accuracy: two structurally separate modality experts that cannot conspire to hallucinate the same wrong story. A single multimodal call sees vision and action as one prompt and glosses over disagreements. Roboscribe analyzes them in parallel, then asks a third agent whether they cohere.
 
 ---
 
@@ -126,7 +126,7 @@ curl -X POST http://localhost:8080/api/v1/execute/async/roboscribe-af.vector_sea
   -d '{"input": {"query": "robot pushes a block toward a target", "top_k": 5}}'
 ```
 
-Open the AgentField UI alongside these curls and you'll see the 200 to 300 cooperating agents per episode lighting up across the 5 phases of the cascade in real time.
+Open the AgentField UI alongside these curls and you'll see the agents lighting up across the 5 phases of the cascade in real time. A 10-episode corpus pass produces 200 to 300 nodes in the workflow graph as the cascade fans out.
 
 Reproduce the benchmark numbers above:
 
@@ -152,7 +152,7 @@ Shipped:
 - [x] Deep Lake substrate with versioned annotation branches
 - [x] Hybrid TQL queries (text + structured + vector cosine similarity)
 - [x] Semantic search via 1024-dim text embeddings
-- [x] Parallel agent dispatch through async control-plane queue (200 to 300 agents per episode)
+- [x] Parallel agent dispatch through async control-plane queue (~24 agents/episode, 200+ in a corpus pass)
 - [x] Branch-vs-branch annotation diff
 - [x] Pluggable `TaskAdapter` protocol with bundled PushT and Aloha bimanual adapters
 - [x] NVIDIA Nemotron Nano VL drop-in compatibility

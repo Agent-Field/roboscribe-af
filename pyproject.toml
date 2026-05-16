@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "roboscribe-af"
+version = "0.1.0"
+description = "Multi-agent annotation system for robotics demonstration data. Built on AgentField and Deep Lake."
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.11"
+authors = [{ name = "AgentField", email = "hello@agentfield.dev" }]
+dependencies = [
+    "agentfield",
+    "deeplake>=4.6",
+    "httpx>=0.27",
+    "Pillow>=10.0",
+    "numpy>=1.24",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.5",
+]
+real-data = [
+    "datasets>=2.14",
+    "huggingface_hub>=0.20",
+    "imageio[ffmpeg]>=2.30",
+]
+
+[project.scripts]
+roboscribe-af = "roboscribe_af.app:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/roboscribe_af"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
