@@ -59,9 +59,9 @@ That entire record is one row in a Deep Lake branch, joined to the raw episode b
 
 ## See it run
 
-[![Roboscribe-AF cascade running in the AgentField UI — click to play](assets/demo-poster.png)](assets/demo.mp4)
+<video src="https://github.com/user-attachments/assets/4166cef1-61e3-4382-9dfd-8ec0f3753a94" autoplay loop muted playsinline width="100%"></video>
 
-The AgentField control plane UI rendering the multi-agent cascade live. Each node is one agent invocation with its prompt, output, latency, and cost. A 10-episode `annotate_corpus` run produces roughly 240 nodes across the 5 phases of the cascade. Click the poster above to open the inline player on GitHub.
+The AgentField control plane UI rendering the multi-agent cascade live. Each node is one agent invocation with its prompt, output, latency, and cost. A 10-episode `annotate_corpus` run produces roughly 240 nodes across the 5 phases of the cascade.
 
 ---
 
