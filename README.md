@@ -87,6 +87,14 @@ A separate audit-grade benchmark (4 hand-labelled frames × 7 objective question
 
 ---
 
+## See it run
+
+<video src="assets/demo.mp4" autoplay loop muted playsinline width="100%"></video>
+
+The AgentField control plane UI shows the cascade live as roboscribe-af annotates a corpus. Each node is one agent invocation with its prompt, output, latency, and cost. A 10-episode corpus run produces roughly 240 nodes across the 5 phases of the cascade.
+
+---
+
 ## How it works
 
 ![Roboscribe-AF 5-phase multi-agent cascade](assets/architecture.png)
