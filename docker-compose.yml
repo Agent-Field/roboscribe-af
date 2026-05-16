@@ -1,0 +1,42 @@
+services:
+  control-plane:
+    image: agentfield/control-plane:latest
+    environment:
+      AGENTFIELD_STORAGE_MODE: local
+      AGENTFIELD_HTTP_ADDR: 0.0.0.0:8080
+    ports:
+      - "${AGENTFIELD_HTTP_PORT:-8080}:8080"
+    volumes:
+      - agentfield-data:/data
+    # NOTE: agentfield/control-plane:latest is a distroless image — no sh, no wget, no curl.
+    # A CMD-based healthcheck cannot run inside the container. The agent SDK retries
+    # connection to the control plane on startup, so service_started is sufficient.
+
+  roboscribe-af:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      AGENTFIELD_SERVER: http://control-plane:8080
+      AGENT_CALLBACK_URL: http://roboscribe-af:8001
+      AGENT_NODE_ID: ${AGENT_NODE_ID:-roboscribe-af}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      AI_MODEL: ${AI_MODEL:-openrouter/qwen/qwen3-vl-32b-instruct}
+      PORT: ${PORT:-8001}
+      # Persistent Deep Lake substrate — survives container rebuilds.
+      DL_DATASET_PATH: /data/roboscribe_deeplake/roboscribe_pusht
+    ports:
+      - "${AGENT_NODE_PORT:-8001}:8001"
+    depends_on:
+      control-plane:
+        condition: service_started
+    volumes:
+      - roboscribe-data:/data
+    restart: on-failure
+
+volumes:
+  agentfield-data:
+  roboscribe-data:
